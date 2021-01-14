@@ -86,11 +86,11 @@
                 <li class="product">
                   <a href="" target="_blank">
                     <div class="pro-img">
-                      + <img src="/imgs/nav-img/nav-3-5.jpg" alt="">
+                      <img src="/imgs/nav-img/nav-3-5.jpg" alt="">
                     </div>
                     <div class="pro-name">小米电视4A 65英寸</div>
                     <div class="pro-price">2699元</div>
-                    + </a>
+                  </a>
                 </li>
                 <li class="product">
                   <a href="" target="_blank">
@@ -140,7 +140,7 @@ export default {
     },
     getProductList() {
       this.axios.get('/products', {
-        pramas: {
+        params: {
           categoryId: '100012',
           pageSize: 6
         }
