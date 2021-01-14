@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from "axios";
-import VueAxios from "vue-axios";
 // import env from './env'
 
 const mock = false;
@@ -24,7 +23,8 @@ axios.interceptors.response.use(function (response){
     alert(res.msg)
   }
 })
-Vue.use(VueAxios,axios)
+
+Vue.prototype.axios = axios
 Vue.config.productionTip = false
 
 new Vue({

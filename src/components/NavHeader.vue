@@ -140,6 +140,7 @@ export default {
     },
     getProductList() {
       this.axios.get('/products', {
+
         params: {
           categoryId: '100012',
           pageSize: 6
