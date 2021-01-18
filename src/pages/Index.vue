@@ -73,14 +73,14 @@
           <div class="list-box">
             <div class="list" v-for="(arr,i) in phoneList" :key="i">
               <div class="item" v-for="(item,j) in arr" :key="j">
-                <span>新品</span>
+                <span :class="{'new-pro':j%2===0}">新品</span>
                 <div class="item-img">
-                  <img src="https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/6f2493e6c6fe8e2485c407e5d75e3651.jpg">
+                  <img :src="item.mainImage">
                 </div>
                 <div class="item-info">
-                  <h3>小米9</h3>
-                  <p>骁龙855，索尼4800万超广角微距</p>
-                  <p class="price">2999元</p>
+                  <h3>{{ item.name }}</h3>
+                  <p>{{ item.subtitle }}</p>
+                  <p class="price">{{ item.price }}</p>
                 </div>
               </div>
             </div>
@@ -186,9 +186,22 @@ export default {
           img: '/imgs/ads/ads-4.jpg'
         }
       ],
-      phoneList: [
-        [1, 1, 1, 1], [1, 1, 1, 1]
-      ]
+      phoneList: []
+    }
+  },
+  mounted() {
+    this.init()
+  },
+  methods: {
+    init() {
+      this.axios.get('/products', {
+        params: {
+          categoryId: 100012,
+          pageSize: 8
+        }
+      }).then((res) => {
+        this.phoneList = [res.list.slice(0, 4), res.list.slice(4, 8)]
+      })
     }
   }
 }
@@ -314,8 +327,8 @@ export default {
 
     h2 {
       font-size: 22px;
-      height:21px;
-      line-height:21px;
+      height: 21px;
+      line-height: 21px;
       color: $colorB;
       margin-bottom: 20px;
     }
@@ -335,8 +348,9 @@ export default {
           width: 986px;
           margin-bottom: 14px;
         }
-        &:last-child{
-          margin-bottom:0;
+
+        &:last-child {
+          margin-bottom: 0;
         }
 
         .item {
@@ -344,31 +358,55 @@ export default {
           height: 302px;
           background: $colorG;
           text-align: center;
-          img{
-            width: 100%;
-            height: 195px;
+
+          span {
+            display: inline-block;
+            width: 67px;
+            height: 24px;
+            font-size: 14px;
+            line-height: 24px;
+            color: $colorG;
+
+            &.new-pro {
+              background: #7ECF68;
+            }
+
+            &.kill-pro {
+              background-color: #E82626;
+            }
           }
-          .item-info{
-            h3{
-              font-size:$fontJ;
-              color:$colorB;
-              line-height:$fontJ;
-              font-weight:bold;
+
+          .item-img {
+            img {
+              width: 100%;
+              height: 195px;
             }
-            p{
-              color:$colorD;
-              line-height:13px;
-              margin:6px auto 13px;
+          }
+
+          .item-info {
+            h3 {
+              font-size: $fontJ;
+              color: $colorB;
+              line-height: $fontJ;
+              font-weight: bold;
             }
-            .price{
-              color:#F20A0A;
-              font-size:$fontJ;
-              font-weight:bold;
-              cursor:pointer;
-              &:after{
-                @include bgImg(22px,22px,'/imgs/icon-cart-hover.png');
-                content:' ';
-                margin-left:5px;
+
+            p {
+              color: $colorD;
+              line-height: 13px;
+              margin: 6px auto 13px;
+            }
+
+            .price {
+              color: #F20A0A;
+              font-size: $fontJ;
+              font-weight: bold;
+              cursor: pointer;
+
+              &:after {
+                @include bgImg(22px, 22px, '/imgs/icon-cart-hover.png');
+                content: ' ';
+                margin-left: 5px;
                 vertical-align: middle;
               }
             }
