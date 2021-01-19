@@ -80,7 +80,7 @@
                 <div class="item-info">
                   <h3>{{ item.name }}</h3>
                   <p>{{ item.subtitle }}</p>
-                  <p class="price">{{ item.price }}</p>
+                  <p class="price">{{ item.price }}元</p>
                 </div>
               </div>
             </div>
@@ -89,19 +89,28 @@
       </div>
     </div>
     <ServiceBar/>
+    <Modal
+        title="提示"
+        sureText="查看购物车"
+        btnType="1"
+        modalType="middle" :showModal="true">
+      <template v-slot:body>
+        <p>商品添加成功!</p>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
 import ServiceBar from "@/components/ServiceBar";
-import {Swiper, SwiperSlide} from 'vue-awesome-swiper'
-
+import {Swiper, SwiperSlide} from 'vue-awesome-swiper';
+import Modal from './../components/Modal'
 import 'swiper/css/swiper.css'
 
 
 export default {
   name: "Index",
-  components: {ServiceBar, Swiper, SwiperSlide},
+  components: {ServiceBar, Swiper, SwiperSlide,Modal},
   data() {
     return {
       swiperOption: {
@@ -197,9 +206,10 @@ export default {
       this.axios.get('/products', {
         params: {
           categoryId: 100012,
-          pageSize: 8
+          pageSize: 14
         }
       }).then((res) => {
+        res.list = res.list.slice(6,14)
         this.phoneList = [res.list.slice(0, 4), res.list.slice(4, 8)]
       })
     }
