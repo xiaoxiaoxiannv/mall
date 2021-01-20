@@ -182,6 +182,7 @@ export default {
         background: $colorA;
         color: white;
         text-align: center;
+        margin-right: 0;
 
         .icon-cart {
           @include bgImg(16px, 12px, '/imgs/icon-cart-checked.png');

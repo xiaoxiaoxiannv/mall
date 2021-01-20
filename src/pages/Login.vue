@@ -14,16 +14,16 @@
             <span>扫码登录</span>
           </h3>
           <div class="input">
-            <input type="text" placeholder="请输入账号">
+            <input type="text" placeholder="请输入账号" v-model="username">
           </div>
           <div class="input">
-            <input type="text" placeholder="请输入密码">
+            <input type="text" placeholder="请输入密码" v-model="password">
           </div>
-          <div class="btn">
-            <a href="">登录</a>
+          <div class="btn-box">
+            <a href="javascript:;" class="btn" @click="login">登录</a>
           </div>
           <div class="tips">
-            <div class="sms">手机短信登录/注册</div>
+            <div class="sms" @click="register">手机短信登录/注册</div>
             <div class="reg">立即注册
               <span>|</span>
               忘记密码
@@ -46,7 +46,37 @@
 
 <script>
 export default {
-  name: "Login"
+  name: "Login",
+  data() {
+    return {
+      username: '',
+      password: '',
+      userId: '',
+      res: {}
+    }
+  },
+  methods: {
+    login() {
+      let {username, password} = this;
+      this.axios.post('/user/login', {
+        username,
+        password
+      }).then((res) => {
+        this.$cookie.set('userId',res.id,{expires:'1M'});
+        this.$router.push('/index');
+      })
+    },
+    register(){
+      this.axios.post('/user/register', {
+        username:'admin1',
+        password:'admin1',
+        email:'admin1@163.com'
+      }).then(() => {
+        alert('注册成功')
+      })
+
+    }
+  }
 }
 </script>
 
@@ -113,6 +143,7 @@ export default {
           line-height: 50px;
           margin-top: 10px;
           font-size: 16px;
+          color: white;
         }
 
         .tips {
@@ -137,23 +168,27 @@ export default {
       }
     }
   }
-  .footer{
-    height:100px;
-    padding-top:60px;
-    color:#999999;
-    font-size:16px;
-    text-align:center;
-    .footer-link{
-      a{
-        color:#999999;
-        display:inline-block;
+
+  .footer {
+    height: 100px;
+    padding-top: 60px;
+    color: #999999;
+    font-size: 16px;
+    text-align: center;
+
+    .footer-link {
+      a {
+        color: #999999;
+        display: inline-block;
       }
-      span{
-        margin:0 10px;
+
+      span {
+        margin: 0 10px;
       }
     }
-    .copyright{
-      margin-top:13px;
+
+    .copyright {
+      margin-top: 13px;
     }
   }
 }
