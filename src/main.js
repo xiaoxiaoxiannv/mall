@@ -4,6 +4,7 @@ import router from './router'
 import axios from "axios";
 import VueLazyload from "vue-lazyload";
 import VueCookie from 'vue-cookie'
+import store from './store'
 // import env from './env'
 
 const mock = false;
@@ -38,6 +39,7 @@ Vue.use(VueLazyload,{
 Vue.use(VueCookie)
 
 new Vue({
+  store,
   router,
   render: h => h(App),
 }).$mount('#app')
