@@ -19,6 +19,9 @@ export default {
 
 <style lang="scss">
 .product {
+  .h{
+    height: 150px;
+  }
   button {
     margin-left: 10px;
   }
