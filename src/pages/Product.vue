@@ -1,14 +1,14 @@
 <template>
   <div class="product">
-    <ProductParam>
+    <ProductParam :title="product.name">
       <template v-slot:buy>
-        <button class="btn">立即购买</button>
+        <button class="btn" @click="buy">立即购买</button>
       </template>
     </ProductParam>
     <div class="content">
       <div class="item-bg">
-        <h2>小米8</h2>
-        <h3>8周年旗舰版</h3>
+        <h2>{{product.name}}</h2>
+        <h3>{{product.subtitle}}</h3>
         <p>
           <a href="javascript:;">全球首款双频 GP</a>
           <span>|</span>
@@ -19,7 +19,7 @@
           <a href="javascript:;">红外人脸识别</a>
         </p>
         <div class="price">
-          <span>￥<em>2599</em></span>
+          <span>￥<em>{{product.price}}</em></span>
         </div>
       </div>
       <div class="item-bg-2"></div>
@@ -71,6 +71,7 @@ export default {
   data(){
     return{
       showSlide:false,
+      product:{},//商品信息
       swiperOption:{
         autoplay:true,
         slidesPerView:3,
@@ -81,6 +82,21 @@ export default {
           clickable :true,
         }
       }
+    }
+  },
+  mounted() {
+    this.getProductInfo();
+  },
+  methods:{
+    getProductInfo(){
+      let id = this.$route.params.id;
+      this.axios.get(`/products/${id}`).then((res)=>{
+        this.product = res
+      })
+    },
+    buy(){
+      let id = this.$route.params.id;
+      this.$router.push(`/detail/${id}`)
     }
   }
 }
