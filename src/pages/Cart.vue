@@ -1,7 +1,6 @@
 <template>
 <div>
   <OrderHeader/>
-  cart
   <NavFooter/>
 </div>
 </template>
