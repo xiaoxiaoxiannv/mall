@@ -33,6 +33,7 @@ export default {
 <style lang="scss">
 .order-header {
   padding: 30px 0;
+  border-bottom: 2px solid #FF6600;
   .header-logo {
     float: left;
     margin-right: 54px;
@@ -51,7 +52,7 @@ export default {
         margin-left: 17px;
         font-size: 14px;
         color: #999999;
-        font-weight:bold;
+        font-weight:200;
       }
     }
   }
