@@ -63,7 +63,7 @@ export default {
   data() {
     return {
       orderId: this.$route.query.orderNo,
-      addressInfo: '',//收货人地址
+      addressInfo: '',//收货人地址信息
       orderDetail: [],//订单详情，包含商品列表
       showDetail: false,//是否显示订单详情
       payType: '',//支付类型
