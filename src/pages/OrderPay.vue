@@ -8,7 +8,7 @@
             <div class="order-info">
               <h2>订单提交成功！去付款咯～</h2>
               <p>请在<span>30分</span>内完成支付, 超时后将取消订单</p>
-              <p>收货信息：{{ addressInfo }}</p>
+              <p>收货信息：{{addressInfo}}</p>
             </div>
             <div class="order-total">
               <p>应付总额：<span>10</span>元</p>
@@ -18,18 +18,18 @@
           <div class="item-detail" v-if="showDetail">
             <div class="item">
               <div class="detail-title">订单号：</div>
-              <div class="detail-info theme-color">{{ orderId }}</div>
+              <div class="detail-info theme-color">{{orderId}}</div>
             </div>
             <div class="item">
               <div class="detail-title">收货信息：</div>
-              <div class="detail-info">{{ addressInfo }}</div>
+              <div class="detail-info">{{addressInfo}}</div>
             </div>
             <div class="item good">
               <div class="detail-title">商品名称：</div>
               <div class="detail-info">
                 <ul>
                   <li v-for="(item,index) in orderDetail" :key="index">
-                    <img v-lazy="item.productImage"/>{{ item.productName }}
+                    <img v-lazy="item.productImage"/>{{item.productName}}
                   </li>
                 </ul>
               </div>
@@ -51,50 +51,64 @@
       </div>
     </div>
     <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg"></scan-pay-code>
+    <modal
+      title="支付确认"
+      btn-type="3"
+      :show-modal="showPayModal"
+      sure-text="查看订单"
+      cancel-text="未支付"
+      @cancel="showPayModal=false"
+      @submit="goOrderList"
+    >
+      <template v-slot:body>
+        <p>您确认是否完成支付?</p>
+      </template>
+    </modal>
   </div>
 </template>
 <script>
 import QRCode from 'qrcode';
 import ScanPayCode from './../components/ScanPayCode';
-import {Message} from 'element-ui'
-
-export default {
-  name: 'OrderPay',
-  data() {
+import {Message} from 'element-ui';
+import Modal from "@/components/Modal";
+export default{
+  name:'order-pay',
+  data(){
     return {
-      orderId: this.$route.query.orderNo,
-      addressInfo: '',//收货人地址信息
-      orderDetail: [],//订单详情，包含商品列表
-      showDetail: false,//是否显示订单详情
-      payType: '',//支付类型
-      showPay: false,//是否显示微信支付弹框
-      payImg: ''//微信支付的二维码地址
+      orderId:this.$route.query.orderNo,
+      addressInfo:'',//收货人地址
+      orderDetail:[],//订单详情，包含商品列表
+      showDetail:false,//是否显示订单详情
+      payType:'',//支付类型
+      showPay:false,//是否显示微信支付弹框
+      payImg:'',//微信支付的二维码地址
+      showPayModal:false,//是否显示二次支付确认弹框
     }
   },
-  components: {
-    ScanPayCode
+  components:{
+    ScanPayCode,Modal
   },
-  mounted() {
+  mounted(){
     this.getOrderDetail();
   },
-  methods: {
-    getOrderDetail() {
-      this.axios.get(`/orders/${this.orderId}`).then((res) => {
+  methods:{
+    getOrderDetail(){
+      this.axios.get(`/orders/${this.orderId}`).then((res)=>{
         let item = res.shippingVo;
         this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`;
         this.orderDetail = res.orderItemVoList;
       })
     },
-    paySubmit(payType) {
-      if (payType == 1) {
-        window.open('/#/order/alipay?orderId=' + this.orderId, '_blank');
-      } else {
-        this.axios.post('/pay', {
-          orderId: this.orderId,
-          orderName: 'Vue高仿小米商城',
-          amount: 0.01,//单位元
-          payType: 2 //1支付宝，2微信
-        }).then((res) => {
+    paySubmit(payType){
+      if(payType == 1){
+        window.open('/#/order/alipay?orderId='+this.orderId,'_blank');
+      }else{
+        this.axios.post('/pay',{
+          orderId:this.orderId,
+          orderName:'Vue高仿小米商城',
+          amount:0.01,//单位元
+          payType:2 //1支付宝，2微信
+        }).then((res)=>{
           QRCode.toDataURL(res.content)
               .then(url => {
                 this.showPay = true;
@@ -107,106 +121,93 @@ export default {
       }
     },
     // 关闭微信弹框
-    closePayModal() {
+    closePayModal(){
       this.showPay = false;
+      this.showPayModal = true;
+    },
+    goOrderList(){
+      this.$router.push('/order/list')
     }
   }
 }
 </script>
 <style lang="scss">
-.order-pay {
-  .wrapper {
-    background-color: #F5F5F5;
-    padding-top: 30px;
-    padding-bottom: 61px;
-
-    .order-wrap {
+.order-pay{
+  .wrapper{
+    background-color:#F5F5F5;
+    padding-top:30px;
+    padding-bottom:61px;
+    .order-wrap{
       padding: 62px 50px;
       background-color: #fff;
-      font-size: 14px;
-      margin-bottom: 30px;
-
-      .item-order {
+      font-size:14px;
+      margin-bottom:30px;
+      .item-order{
         display: flex;
         align-items: center;
-
-        .icon-succ {
+        .icon-succ{
           width: 90px;
           height: 90px;
           border-radius: 50%;
-          background: url('/imgs/icon-gou.png') #80c58a no-repeat center;
-          background-size: 60px;
-          margin-right: 40px;
+          background:url('/imgs/icon-gou.png') #80c58a no-repeat center;
+          background-size:60px;
+          margin-right:40px;
         }
-
-        .order-info {
+        .order-info{
           margin-right: 248px;
-
-          h2 {
-            font-size: 24px;
-            color: #333333;
-            margin-bottom: 20px;
+          h2{
+            font-size:24px;
+            color:#333333;
+            margin-bottom:20px;
           }
-
-          p {
-            color: #666666;
-
-            span {
-              color: #FF6700;
+          p{
+            color:#666666;
+            span{
+              color:#FF6700;
             }
           }
         }
-
-        .order-total {
-          & > p:first-child {
-            margin-bottom: 30px;
+        .order-total{
+          &>p:first-child{
+            margin-bottom:30px;
           }
-
-          span {
-            font-size: 28px;
-            color: #FF6700;
+          span{
+            font-size:28px;
+            color:#FF6700;
           }
-
-          .icon-down {
-            display: inline-block;
-            width: 14px;
-            height: 10px;
-            background: url('/imgs/icon-down.png') no-repeat center;
-            background-size: contain;
-            margin-left: 9px;
-            transition: all .5s;
-            cursor: pointer;
-
-            &.up {
+          .icon-down{
+            display:inline-block;
+            width:14px;
+            height:10px;
+            background:url('/imgs/icon-down.png') no-repeat center;
+            background-size:contain;
+            margin-left:9px;
+            transition:all .5s;
+            cursor:pointer;
+            &.up{
               transform: rotate(180deg);
             }
           }
-
-          .icon-up {
+          .icon-up{
             transform: rotate(180deg);
           }
         }
       }
-
-      .item-detail {
+      .item-detail{
         border-top: 1px solid #D7D7D7;
         padding-top: 47px;
         padding-left: 130px;
         font-size: 14px;
         margin-top: 45px;
-
-        .item {
-          margin-bottom: 19px;
-
-          .detail-title {
-            float: left;
-            width: 100px;
+        .item{
+          margin-bottom:19px;
+          .detail-title{
+            float:left;
+            width:100px;
           }
-
-          .detail-info {
-            display: inline-block;
-
-            img {
+          .detail-info{
+            display:inline-block;
+            img{
               width: 30px;
               vertical-align: middle;
             }
@@ -214,13 +215,11 @@ export default {
         }
       }
     }
-
-    .item-pay {
-      padding: 26px 50px 72px;
-      background-color: #ffffff;
+    .item-pay{
+      padding:26px 50px 72px;
+      background-color:#ffffff;
       color: #333333;
-
-      h3 {
+      h3{
         font-size: 20px;
         font-weight: 200;
         color: #333333;
@@ -228,35 +227,29 @@ export default {
         border-bottom: 1px solid #D7D7D7;
         margin-bottom: 26px;
       }
-
-      .pay-way {
-        font-size: 18px;
-
-        .pay {
-          display: inline-block;
-          width: 188px;
-          height: 64px;
-          border: 1px solid #D7D7D7;
-          cursor: pointer;
-
-          &:last-child {
-            margin-left: 20px;
+      .pay-way{
+        font-size:18px;
+        .pay{
+          display:inline-block;
+          width:188px;
+          height:64px;
+          border:1px solid #D7D7D7;
+          cursor:pointer;
+          &:last-child{
+            margin-left:20px;
           }
-
-          &.checked {
-            border: 1px solid #FF6700;
+          &.checked{
+            border:1px solid #FF6700;
           }
         }
-
-        .pay-ali {
-          background: url('/imgs/pay/icon-ali.png') no-repeat center;
-          background-size: 103px 38px;
-          margin-top: 19px;
+        .pay-ali{
+          background:url('/imgs/pay/icon-ali.png') no-repeat center;
+          background-size:103px 38px;
+          margin-top:19px;
         }
-
-        .pay-wechat {
-          background: url('/imgs/pay/icon-wechat.png') no-repeat center;
-          background-size: 103px 38px;
+        .pay-wechat{
+          background:url('/imgs/pay/icon-wechat.png') no-repeat center;
+          background-size:103px 38px;
         }
       }
     }
