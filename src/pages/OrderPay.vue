@@ -11,7 +11,7 @@
               <p>收货信息：{{addressInfo}}</p>
             </div>
             <div class="order-total">
-              <p>应付总额：<span>10</span>元</p>
+              <p>应付总额：<span>{{payment}}</span>元</p>
               <p>订单详情<em class="icon-down" :class="{'up':showDetail}" @click="showDetail=!showDetail"></em></p>
             </div>
           </div>
@@ -83,7 +83,8 @@ export default{
       showPay:false,//是否显示微信支付弹框
       payImg:'',//微信支付的二维码地址
       showPayModal:false,//是否显示二次支付确认弹框
-      T:''//定时器ID
+      T:'',//定时器ID
+      payment:0//应付总额
     }
   },
   components:{
@@ -98,6 +99,7 @@ export default{
         let item = res.shippingVo;
         this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`;
         this.orderDetail = res.orderItemVoList;
+        this.payment = res.payment
       })
     },
     paySubmit(payType){
