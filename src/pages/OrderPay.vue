@@ -83,6 +83,7 @@ export default{
       showPay:false,//是否显示微信支付弹框
       payImg:'',//微信支付的二维码地址
       showPayModal:false,//是否显示二次支付确认弹框
+      T:''//定时器ID
     }
   },
   components:{
@@ -113,6 +114,7 @@ export default{
               .then(url => {
                 this.showPay = true;
                 this.payImg = url;
+                this.loopOrderState();
               })
               .catch(() => {
                 Message.error('微信二维码生成失败，请稍后重试');
@@ -124,6 +126,17 @@ export default{
     closePayModal(){
       this.showPay = false;
       this.showPayModal = true;
+      clearInterval(this.T)
+    },
+    loopOrderState(){
+      this.T = setInterval(()=>{
+        this.axios.get(`/orders/${this.orderId}`).then((res)=>{
+          if(res.status === 20){
+            clearInterval(this.T)
+            this.goOrderList();
+          }
+        })
+      },1000);
     },
     goOrderList(){
       this.$router.push('/order/list')
