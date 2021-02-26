@@ -6,7 +6,7 @@
       </template>
     </order-header>
     <div class="wrapper">
-      <dic class="container">
+      <div class="container">
         <div class="order-box">
           <loading v-if="loading"></loading>
           <div class="order" v-for="(order,index) in list" :key="index">
@@ -22,7 +22,7 @@
               </div>
               <div class="item-money fr">
                 <span>应付金额:</span>
-                <span>{{ order.payment }}</span>
+                <span class="money">{{ order.payment }}</span>
                 <span>元</span>
               </div>
             </div>
@@ -46,8 +46,9 @@
               </div>
             </div>
           </div>
+          <NoData v-if="!loading && list.length == 0"></NoData>
         </div>
-      </dic>
+      </div>
     </div>
   </div>
 </template>
@@ -55,13 +56,14 @@
 <script>
 import OrderHeader from "@/components/OrderHeader";
 import Loading from "@/components/Loading";
+import NoData from "@/components/NoData";
 
 export default {
   name: "OrderList",
-  components: {OrderHeader,Loading},
+  components: {OrderHeader, Loading, NoData},
   data() {
     return {
-      loading:true,
+      loading: true,
       list: []
     }
   },
@@ -73,7 +75,7 @@ export default {
       this.axios.get('/orders').then((res) => {
         this.loading = false;
         this.list = res.list;
-      }).catch(()=>{
+      }).catch(() => {
         this.loading = false;
       })
     },
