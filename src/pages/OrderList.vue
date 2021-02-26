@@ -8,6 +8,7 @@
     <div class="wrapper">
       <dic class="container">
         <div class="order-box">
+          <loading v-if="loading"></loading>
           <div class="order" v-for="(order,index) in list" :key="index">
             <div class="order-title">
               <div class="item-info fl">
@@ -53,12 +54,14 @@
 
 <script>
 import OrderHeader from "@/components/OrderHeader";
+import Loading from "@/components/Loading";
 
 export default {
   name: "OrderList",
-  components: {OrderHeader},
+  components: {OrderHeader,Loading},
   data() {
     return {
+      loading:true,
       list: []
     }
   },
@@ -68,7 +71,10 @@ export default {
   methods: {
     getOrderList() {
       this.axios.get('/orders').then((res) => {
-        this.list = res.list
+        this.loading = false;
+        this.list = res.list;
+      }).catch(()=>{
+        this.loading = false;
       })
     },
     goPay(orderNo) {
