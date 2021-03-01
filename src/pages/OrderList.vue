@@ -46,16 +46,18 @@
               </div>
             </div>
           </div>
-          <el-pagination
-            background
-            class="pagination"
-            layout="prev,pager,next"
-            :pageSize="pageSize"
-            :total="total"
-            @current-change="handleChange"
-          >
-
-          </el-pagination>
+<!--          <el-pagination-->
+<!--            background-->
+<!--            class="pagination"-->
+<!--            layout="prev,pager,next"-->
+<!--            :pageSize="pageSize"-->
+<!--            :total="total"-->
+<!--            @current-change="handleChange"-->
+<!--          >-->
+<!--          </el-pagination>-->
+          <div class="load-more">
+            <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>
+          </div>
           <NoData v-if="!loading && list.length == 0"></NoData>
         </div>
       </div>
@@ -67,7 +69,8 @@
 import OrderHeader from "@/components/OrderHeader";
 import Loading from "@/components/Loading";
 import NoData from "@/components/NoData";
-import {Pagination} from 'element-ui';
+//import {Pagination} from 'element-ui';
+import {Button} from 'element-ui';
 
 export default {
   name: "OrderList",
@@ -75,11 +78,12 @@ export default {
     OrderHeader,
     Loading,
     NoData,
-    [Pagination.name]:Pagination
+    //[Pagination.name]:Pagination
+    [Button.name]:Button
   },
   data() {
     return {
-      loading: true,
+      loading: false,
       list: [],
       pageSize:10,
       pageNum:1,
@@ -91,13 +95,17 @@ export default {
   },
   methods: {
     getOrderList() {
-      this.axios.get('/orders',{
+      this.loading = true;
+      this.axios.get(
+          '/orders',{
         params:{
+          pageSize:1,
           pageNum:this.pageNum
         }
       }).then((res) => {
         this.loading = false;
-        this.list = res.list;
+        //this.list = res.list;
+        this.list = this.list.concat(res.list)
         this.total = res.total
       }).catch(() => {
         this.loading = false;
@@ -119,8 +127,12 @@ export default {
         }
       })
     },
-    handleChange(pageNum){
-      this.pageNum = pageNum;
+    // handleChange(pageNum){
+    //   this.pageNum = pageNum;
+    //   this.getOrderList();
+    // }
+    loadMore(){
+      this.pageNum++;
       this.getOrderList();
     }
   }
@@ -203,12 +215,19 @@ export default {
           }
         }
       }
-      .pagination{
-        text-align:right;
-      }
-      .el-pagination.is-background .el-pager li:not(.disabled).active{
+      //.pagination{
+      //  text-align:right;
+      //}
+      //.el-pagination.is-background .el-pager li:not(.disabled).active{
+      //  background-color: #FF6600;
+      //  color: #FFF;
+      //}
+      .el-button--primary{
         background-color: #FF6600;
-        color: #FFF;
+        border-color:#FF6600;
+      }
+      .load-more{
+        text-align: center;
       }
     }
   }
