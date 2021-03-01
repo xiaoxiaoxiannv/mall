@@ -46,25 +46,25 @@
               </div>
             </div>
           </div>
-          <!--          <el-pagination-->
-          <!--            background-->
-          <!--            class="pagination"-->
-          <!--            layout="prev,pager,next"-->
-          <!--            :pageSize="pageSize"-->
-          <!--            :total="total"-->
-          <!--            @current-change="handleChange"-->
-          <!--          >-->
-          <!--          </el-pagination>-->
+                    <el-pagination
+                      background
+                      class="pagination"
+                      layout="prev,pager,next"
+                      :pageSize="pageSize"
+                      :total="total"
+                      @current-change="handleChange"
+                    >
+                    </el-pagination>
           <!--          <div class="load-more" v-if="showNextPage">-->
           <!--            <el-button type="primary" :loading="loading" @click="loadMore">加载更多</el-button>-->
           <!--          </div>-->
-          <div class="scroll-more"
-               v-infinite-scroll="scrollMore"
-               infinite-scroll-disabled="busy"
-               infinite-scroll-distance="410"
-          >
-            <img src="/imgs/loading-svg/loading-spinning-bubbles.svg" v-show="loading">
-          </div>
+<!--          <div class="scroll-more"-->
+<!--               v-infinite-scroll="scrollMore"-->
+<!--               infinite-scroll-disabled="busy"-->
+<!--               infinite-scroll-distance="410"-->
+<!--          >-->
+<!--            <img src="/imgs/loading-svg/loading-spinning-bubbles.svg" v-show="loading">-->
+<!--          </div>-->
           <NoData v-if="!loading && list.length == 0"></NoData>
         </div>
       </div>
@@ -76,9 +76,9 @@
 import OrderHeader from "@/components/OrderHeader";
 import Loading from "@/components/Loading";
 import NoData from "@/components/NoData";
-//import {Pagination} from 'element-ui';
+import {Pagination} from 'element-ui';
 //import {Button} from 'element-ui';
-import infiniteScroll from 'vue-infinite-scroll'
+//import infiniteScroll from 'vue-infinite-scroll'
 
 
 export default {
@@ -87,21 +87,21 @@ export default {
     OrderHeader,
     Loading,
     NoData,
-    //[Pagination.name]:Pagination
+    [Pagination.name]:Pagination
     //[Button.name]:Button
   },
-  directives: {
-    infiniteScroll
-  },
+  // directives: {
+  //   infiniteScroll
+  // },
   data() {
     return {
-      loading: false,
+      loading: true,
       list: [],
       pageSize: 10,
       pageNum: 1,
-      //total:3,
+      total:0,
       //showNextPage:true//是否显示加载更多按钮
-      busy:false//滚动加载是否触发
+      //busy:false//滚动加载是否触发
     }
   },
   mounted() {
@@ -109,28 +109,27 @@ export default {
   },
   methods: {
     getOrderList() {
-      this.loading = true;
-      this.busy = true;
+      //this.loading = false;
+      //this.busy = true;
       this.axios.get(
           '/orders', {
             params: {
-              pageSize: 10,
               pageNum: this.pageNum,
             }
           }).then((res) => {
         this.loading = false;
-        //this.list = res.list;
-        this.list = this.list.concat(res.list)
-        //this.total = res.total
+        this.list = res.list;
+        //this.list = this.list.concat(res.list)
+        this.total = res.total;
         //this.showNextPage = res.hasNextPage;//没有下一页时就不显示加载更多按钮
-        this.busy = false;
-        if(res.hasNextPage){
-          this.busy = false;
-        }else{
-          this.busy = true
-        }
-      // }).catch(() => {
-      //   this.loading = false;
+        // this.busy = false;
+        // if(res.hasNextPage){
+        //   this.busy = false;
+        // }else{
+        //   this.busy = true
+        // }
+      }).catch(() => {
+        this.loading = false;
       })
     },
     goPay(orderNo) {
@@ -149,21 +148,21 @@ export default {
         }
       })
     },
-    // handleChange(pageNum){
-    //   this.pageNum = pageNum;
-    //   this.getOrderList();
-    // }
+    handleChange(pageNum){
+      this.pageNum = pageNum;
+      this.getOrderList();
+    }
     // loadMore(){
     //   this.pageNum++;
     //   this.getOrderList();
     // }
-    scrollMore(){
-      this.busy = true;
-      setTimeout(()=>{
-        this.pageNum++;
-        this.getOrderList();
-      })
-    }
+    // scrollMore(){
+    //   this.busy = true;
+    //   setTimeout(()=>{
+    //     this.pageNum++;
+    //     this.getOrderList();
+    //   })
+    // }
   }
 }
 </script>
@@ -244,14 +243,13 @@ export default {
           }
         }
       }
-
-      //.pagination{
-      //  text-align:right;
-      //}
-      //.el-pagination.is-background .el-pager li:not(.disabled).active{
-      //  background-color: #FF6600;
-      //  color: #FFF;
-      //}
+      .pagination{
+        text-align:right;
+      }
+      .el-pagination.is-background .el-pager li:not(.disabled).active{
+        background-color: #FF6600;
+        color: #FFF;
+      }
       //.el-button--primary {
       //  background-color: #FF6600;
       //  border-color: #FF6600;
@@ -260,9 +258,9 @@ export default {
       //.load-more {
       //  text-align: center;
       //}
-      .scroll-more{
-        text-align: center;
-      }
+      //.scroll-more{
+      //  text-align: center;
+      //}
     }
   }
 }
