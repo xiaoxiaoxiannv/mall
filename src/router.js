@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Home from "@/pages/Home";
 import Index from "@/pages/Index";
 import Product from "@/pages/Product";
-import Detail from "@/pages/Detail";
+//import Detail from "@/pages/Detail";
 import Cart from "@/pages/Cart"
 import Order from "@/pages/Order";
 import OrderList from "@/pages/OrderList";
@@ -22,7 +22,7 @@ const routes = [
         children: [
             {path: '/index', component: Index},
             {path: '/product/:id', component: Product},
-            {path: '/detail/:id', component: Detail},
+            {path: '/detail/:id', component: resolve => require(['./pages/Detail.vue'], resolve)},
         ]
     },
     {path: '/cart', component: Cart},
