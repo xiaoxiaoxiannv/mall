@@ -5,12 +5,12 @@ import Index from "@/pages/Index";
 import Product from "@/pages/Product";
 //import Detail from "@/pages/Detail";
 import Cart from "@/pages/Cart"
-import Order from "@/pages/Order";
-import OrderList from "@/pages/OrderList";
+//import Order from "@/pages/Order";
+//import OrderList from "@/pages/OrderList";
 import OrderConfirm from "@/pages/OrderConfirm";
 import OrderPay from "@/pages/OrderPay";
 import Alipay from "@/pages/Alipay";
-import Login from "@/pages/Login";
+//import Login from "@/pages/Login";
 
 Vue.use(VueRouter)
 
@@ -26,14 +26,14 @@ const routes = [
         ]
     },
     {path: '/cart', component: Cart},
-    {path: '/login', component: Login},
+    {path: '/login', component: ()=>import('./pages/Login.vue')},
     {
         path: '/order',
-        component: Order,
+        component: ()=>import('./pages/Order.vue'),
         children: [
             {
                 path: 'list',
-                component: OrderList
+                component: ()=>import('./pages/OrderList.vue')
             },
             {
                 path: 'confirm',
